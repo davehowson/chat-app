@@ -46,6 +46,38 @@ export function useLogin() {
     return login;
 }
 
+export function useRegister() {
+    const { enqueueSnackbar } = useSnackbar();
+    const handleResponse = useHandleResponse();
+
+    const register = (name, username, password, password2) => {
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, username, password, password2 }),
+        };
+
+        return fetch(
+            `${process.env.REACT_APP_API_URL}/api/users/register`,
+            requestOptions
+        )
+            .then(handleResponse)
+            .then(user => {
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                currentUserSubject.next(user);
+
+                return user;
+            })
+            .catch(function() {
+                enqueueSnackbar('Failed to Register', {
+                    variant: 'error',
+                });
+            });
+    };
+
+    return register;
+}
+
 function logout() {
     localStorage.removeItem('currentUser');
     currentUserSubject.next(null);
