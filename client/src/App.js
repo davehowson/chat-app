@@ -1,11 +1,12 @@
 import React from 'react';
-import { BrowserRouter, Route } from 'react-router-dom';
+import { Router, Route } from 'react-router-dom';
 import { createMuiTheme } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { ThemeProvider } from '@material-ui/styles';
 import { SnackbarProvider } from 'notistack';
 
 import './App.css';
+import history from './Utilities/history';
 import Home from './Home/Home';
 
 const theme = createMuiTheme({
@@ -19,9 +20,9 @@ function App() {
         <ThemeProvider theme={theme}>
             <CssBaseline />
             <SnackbarProvider maxSnack={3} autoHideDuration={3000}>
-                <BrowserRouter>
+                <Router history={history}>
                     <Route path="/" exact component={Home} />
-                </BrowserRouter>
+                </Router>
             </SnackbarProvider>
         </ThemeProvider>
     );

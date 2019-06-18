@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import Button from '@material-ui/core/Button';
+import { Formik } from 'formik';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
+import * as Yup from 'yup';
 
+import history from '../Utilities/history';
 import { useLogin } from '../Services/authenticationService';
 
 const useStyles = makeStyles(theme => ({
@@ -23,15 +26,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Login = () => {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
     const login = useLogin();
-
-    const handleSubmit = e => {
-        e.preventDefault();
-        login(username, password);
-    };
-
     const classes = useStyles();
 
     return (
@@ -39,50 +34,82 @@ const Login = () => {
             <Typography component="h1" variant="h5">
                 Sign in
             </Typography>
-            <form onSubmit={handleSubmit} className={classes.form} noValidate>
-                <TextField
-                    variant="outlined"
-                    margin="normal"
-                    required
-                    fullWidth
-                    id="username"
-                    label="Username"
-                    name="username"
-                    autoComplete="username"
-                    value={username}
-                    onChange={e => {
-                        setUsername(e.target.value);
-                    }}
-                    autoFocus
-                />
-
-                <TextField
-                    variant="outlined"
-                    margin="normal"
-                    required
-                    fullWidth
-                    id="password"
-                    label="Password"
-                    name="password"
-                    type="password"
-                    autoComplete="password"
-                    value={password}
-                    onChange={e => {
-                        setPassword(e.target.value);
-                    }}
-                    autoFocus
-                />
-
-                <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    color="primary"
-                    className={classes.submit}
-                >
-                    Sign In
-                </Button>
-            </form>
+            <Formik
+                initialValues={{
+                    username: '',
+                    password: '',
+                }}
+                validationSchema={Yup.object().shape({
+                    username: Yup.string()
+                        .required('Username is required')
+                        .max(40, 'Username is too long'),
+                    password: Yup.string()
+                        .required('Password is required')
+                        .max(100, 'Password is too long')
+                        .min(6, 'Password too short'),
+                })}
+                onSubmit={(
+                    { username, password },
+                    { setStatus, setSubmitting }
+                ) => {
+                    setStatus();
+                    login(username, password).then(
+                        () => {
+                            const { from } = history.location.state || {
+                                from: { pathname: '/app' },
+                            };
+                            history.push(from);
+                        },
+                        error => {
+                            setSubmitting(false);
+                            setStatus(error);
+                        }
+                    );
+                }}
+            >
+                {({ handleSubmit, handleChange, values, touched, errors }) => (
+                    <form onSubmit={handleSubmit} className={classes.form}>
+                        <TextField
+                            id="username"
+                            className={classes.textField}
+                            name="username"
+                            label="Username"
+                            fullWidth={true}
+                            variant="outlined"
+                            margin="normal"
+                            required={true}
+                            helperText={touched.username ? errors.username : ''}
+                            error={touched.username && Boolean(errors.username)}
+                            value={values.username}
+                            onChange={handleChange}
+                        />
+                        <TextField
+                            id="password"
+                            className={classes.textField}
+                            name="password"
+                            label="Password"
+                            fullWidth={true}
+                            variant="outlined"
+                            margin="normal"
+                            required={true}
+                            helperText={touched.password ? errors.password : ''}
+                            error={touched.password && Boolean(errors.password)}
+                            value={values.password}
+                            onChange={handleChange}
+                            type="password"
+                        />
+                        <Button
+                            type="submit"
+                            fullWidth={true}
+                            variant="contained"
+                            color="primary"
+                            className={classes.submit}
+                        >
+                            Login
+                        </Button>
+                    </form>
+                )}
+            </Formik>
         </div>
     );
 };
