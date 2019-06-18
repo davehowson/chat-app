@@ -5,6 +5,7 @@ const passport = require('passport');
 const cors = require('cors');
 
 const users = require('./routes/api/users');
+const messages = require('./routes/api/messages');
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.use(passport.initialize());
 require('./config/passport')(passport);
 // Routes
 app.use('/api/users', users);
+app.use('/api/messages', messages);
 
 // Port that the webserver listens to
 const port = process.env.PORT || 5000;

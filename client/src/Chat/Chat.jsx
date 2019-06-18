@@ -76,7 +76,7 @@ const Chat = () => {
                         </ListItem>
                     </List>
                 </Grid>
-                <Grid item>
+                <Grid item md={8}>
                     <ChatBox scope={scope} />
                 </Grid>
             </Grid>
