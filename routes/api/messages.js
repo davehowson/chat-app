@@ -8,7 +8,7 @@ const Message = require('../../models/Message');
 
 // Get global messages
 router.get('/', (req, res) => {
-    Message.find({}, (err, messages) => {
+    Message.find({ global: true }, (err, messages) => {
         res.send(messages);
     });
 });
