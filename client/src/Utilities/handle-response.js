@@ -2,7 +2,7 @@ import { authenticationService } from '../Services/authenticationService';
 import { useSnackbar } from 'notistack';
 
 const useHandleResponse = () => {
-    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const { enqueueSnackbar } = useSnackbar();
 
     const handleResponse = response => {
         return response.text().then(text => {
