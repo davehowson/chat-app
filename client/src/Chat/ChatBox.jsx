@@ -1,10 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import IconButton from '@material-ui/core/IconButton';
 import SendIcon from '@material-ui/icons/Send';
+
+import {
+    useGetGlobalMessages,
+    useSendGlobalMessage,
+} from '../Services/chatService';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -17,12 +22,28 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const ChatBox = props => {
-    const [message, setMessage] = useState('');
+    const [newMessage, setNewMessage] = useState('');
+    const [messages, setMessages] = useState([]);
+    const getGlobalMessages = useGetGlobalMessages();
+    const sendGlobalMessage = useSendGlobalMessage();
     const classes = useStyles();
+
+    useEffect(() => {
+        reloadMessages();
+    }, []);
+
+    const reloadMessages = () => {
+        getGlobalMessages().then(res => {
+            setMessages(res);
+        });
+    };
 
     const handleSubmit = e => {
         e.preventDefault();
-        console.log(message);
+        sendGlobalMessage(newMessage).then(() => {
+            setNewMessage('');
+            reloadMessages();
+        });
     };
 
     return (
@@ -32,7 +53,17 @@ const ChatBox = props => {
             </Grid>
             <Grid item xs={12}>
                 <Grid container>
-                    <Grid item xs={12} />
+                    <Grid item xs={12}>
+                        {messages && (
+                            <>
+                                <ul>
+                                    {messages.map(x => (
+                                        <li key={x._id}>{x.body}</li>
+                                    ))}
+                                </ul>
+                            </>
+                        )}
+                    </Grid>
                     <Grid item xs={12}>
                         <form onSubmit={handleSubmit}>
                             <Grid
@@ -49,14 +80,14 @@ const ChatBox = props => {
                                         fullWidth
                                         multiline
                                         rowsMax={4}
-                                        value={message}
+                                        value={newMessage}
                                         onChange={e =>
-                                            setMessage(e.target.value)
+                                            setNewMessage(e.target.value)
                                         }
                                     />
                                 </Grid>
                                 <Grid item xs={2}>
-                                    <IconButton>
+                                    <IconButton type="submit">
                                         <SendIcon />
                                     </IconButton>
                                 </Grid>

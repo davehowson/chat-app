@@ -34,7 +34,8 @@ router.post('/', (req, res) => {
             console.log(err);
             res.sendStatus(500);
         } else {
-            res.sendStatus(200);
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({ message: 'Success' }));
         }
     });
 });
