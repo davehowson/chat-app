@@ -16,7 +16,7 @@ export const authenticationService = {
 };
 
 export function useLogin() {
-    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const { enqueueSnackbar } = useSnackbar();
     const handleResponse = useHandleResponse();
 
     const login = (username, password) => {
@@ -34,9 +34,6 @@ export function useLogin() {
             .then(user => {
                 localStorage.setItem('currentUser', JSON.stringify(user));
                 currentUserSubject.next(user);
-                enqueueSnackbar('Successfully logged in', {
-                    variant: 'success',
-                });
                 return user;
             })
             .catch(function() {

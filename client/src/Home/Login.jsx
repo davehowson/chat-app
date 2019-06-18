@@ -56,7 +56,7 @@ const Login = () => {
                     login(username, password).then(
                         () => {
                             const { from } = history.location.state || {
-                                from: { pathname: '/app' },
+                                from: { pathname: '/chat' },
                             };
                             history.push(from);
                         },
