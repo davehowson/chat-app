@@ -1,6 +1,20 @@
 # MERN Based Chat Application
 
-This is a basic chat application built on Mongo DB, Express JS, React JS & Node JS. 
-It is a work in progress and is developed to improve my skills in using the MERN stack.
-Most of the code is based on guides found on the internet, however, their code and functionality is
-altered to better suit the needs of the chat application.
+Basic chat application built using
+* React
+* NodeJS
+* Express
+* MongoDB
+
+Real time message broadcasting is developed using [Socket.IO](https://socket.io/).
+
+Has the following features
+* Uses JSON Web Tokens to facilitate authentication between Client & Server
+* Provides a **Global Chat** which can be used by anyone using the application to broadcast messages to everyone else.
+
+Currently developing the following features
+* Private chat functionality
+* User profile customization functionality
+
+
+This application was developed purely for the intent of learning the MERN stack.
