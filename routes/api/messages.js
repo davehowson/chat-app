@@ -8,6 +8,21 @@ const Message = require('../../models/Message');
 const Conversation = require('../../models/Conversation');
 const GlobalMessage = require('../../models/GlobalMessage');
 
+let jwtUser = null;
+
+// Token verfication middleware
+router.use(function(req, res, next) {
+    try {
+        jwtUser = jwt.verify(verify(req), keys.secretOrKey);
+        next();
+    } catch (err) {
+        console.log(err);
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify({ message: 'Unauthorized' }));
+        res.sendStatus(401);
+    }
+});
+
 // Get global messages
 router.get('/global', (req, res) => {
     GlobalMessage.find()
@@ -24,15 +39,8 @@ router.get('/global', (req, res) => {
         });
 });
 
+// Post global message
 router.post('/global', (req, res) => {
-    // Verify and decode user from JWT Token
-    let jwtUser = null;
-    try {
-        jwtUser = jwt.verify(verify(req), keys.secretOrKey);
-    } catch (err) {
-        console.log(err);
-    }
-
     let message = new GlobalMessage({
         from: jwtUser.id,
         body: req.body.body,
@@ -63,8 +71,8 @@ router.post('/', (req, res) => {
     }
 
     Conversation.findOneAndUpdate(
-        { from: jwtUser.id, to: req.body.to, global: req.body.global },
-        { from: jwtUser.id, to: req.body.to, global: req.body.global },
+        { from: jwtUser.id, to: req.body.to },
+        { from: jwtUser.id, to: req.body.to },
         { upsert: true, new: true, setDefaultsOnInsert: true },
         function(err, conversation) {
             if (err) {

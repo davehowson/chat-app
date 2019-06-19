@@ -11,10 +11,6 @@ const ConversationSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'users',
     },
-    global: {
-        type: Boolean,
-        default: false,
-    },
     date: {
         type: String,
         default: Date.now,
