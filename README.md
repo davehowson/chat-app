@@ -8,6 +8,8 @@ Basic chat application built using
 
 Real time message broadcasting is developed using [Socket.IO](https://socket.io/).
 
+### Features
+
 Has the following features
 * Uses JSON Web Tokens to facilitate authentication between Client & Server
 * Provides a **Global Chat** which can be used by anyone using the application to broadcast messages to everyone else.
