@@ -5,12 +5,11 @@ const Schema = mongoose.Schema;
 const MessageSchema = new Schema({
     from: {
         type: Schema.Types.ObjectId,
-        ref: 'User',
-        required: true,
+        ref: 'users',
     },
     to: {
         type: Schema.Types.ObjectId,
-        ref: 'User',
+        ref: 'users',
     },
     global: {
         type: Boolean,

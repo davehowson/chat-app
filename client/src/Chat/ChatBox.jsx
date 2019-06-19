@@ -89,7 +89,7 @@ const ChatBox = props => {
                                             <Avatar>H</Avatar>
                                         </ListItemAvatar>
                                         <ListItemText
-                                            primary="Chad Bradley"
+                                            primary={m.from.name}
                                             secondary={
                                                 <React.Fragment>
                                                     {m.body}

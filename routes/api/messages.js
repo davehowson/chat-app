@@ -8,9 +8,11 @@ const Message = require('../../models/Message');
 
 // Get global messages
 router.get('/', (req, res) => {
-    Message.find({ global: true }, (err, messages) => {
-        res.send(messages);
-    });
+    Message.find({ global: true })
+        .populate('from')
+        .exec((err, messages) => {
+            res.send(messages);
+        });
 });
 
 router.post('/', (req, res) => {
@@ -32,6 +34,8 @@ router.post('/', (req, res) => {
     message.save(err => {
         if (err) {
             console.log(err);
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({ message: 'Failure' }));
             res.sendStatus(500);
         } else {
             res.setHeader('Content-Type', 'application/json');
