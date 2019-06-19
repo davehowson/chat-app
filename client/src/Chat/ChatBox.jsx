@@ -9,6 +9,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import socketIOClient from 'socket.io-client';
 
 import {
     useGetGlobalMessages,
@@ -45,12 +46,18 @@ const ChatBox = props => {
     const [messages, setMessages] = useState([]);
     const getGlobalMessages = useGetGlobalMessages();
     const sendGlobalMessage = useSendGlobalMessage();
-    let lastMessage = useRef(null);
+    const [lastMessage, setLastMessage] = useState(null);
+    let chatBottom = useRef(null);
     const classes = useStyles();
 
     useEffect(() => {
         reloadMessages();
         scrollToBottom();
+    }, [lastMessage]);
+
+    useEffect(() => {
+        const socket = socketIOClient(process.env.REACT_APP_API_URL);
+        socket.on('messages', data => setLastMessage(data));
     }, []);
 
     const reloadMessages = () => {
@@ -60,7 +67,7 @@ const ChatBox = props => {
     };
 
     const scrollToBottom = () => {
-        lastMessage.current.scrollIntoView({ behavior: 'smooth' });
+        chatBottom.current.scrollIntoView({ behavior: 'smooth' });
     };
 
     useEffect(scrollToBottom, [messages]);
@@ -69,7 +76,6 @@ const ChatBox = props => {
         e.preventDefault();
         sendGlobalMessage(newMessage).then(() => {
             setNewMessage('');
-            reloadMessages();
         });
     };
 
@@ -100,7 +106,7 @@ const ChatBox = props => {
                                 ))}
                             </List>
                         )}
-                        <div ref={lastMessage} />
+                        <div ref={chatBottom} />
                     </Grid>
                     <Grid item xs={12} className={classes.inputRow}>
                         <form onSubmit={handleSubmit} className={classes.form}>
