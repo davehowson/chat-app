@@ -26,7 +26,7 @@ const useStyles = makeStyles(theme => ({
         height: '100%',
     },
     messagesRow: {
-        maxHeight: '70vh',
+        maxHeight: '75vh',
         overflowY: 'auto',
     },
     newMessageRow: {
@@ -38,6 +38,12 @@ const useStyles = makeStyles(theme => ({
     },
     form: {
         width: '100%',
+    },
+    avatar: {
+        margin: theme.spacing(1, 1.5),
+    },
+    listItem: {
+        width: '80%',
     },
 }));
 
@@ -90,8 +96,14 @@ const ChatBox = props => {
                         {messages && (
                             <List>
                                 {messages.map(m => (
-                                    <ListItem key={m._id}>
-                                        <ListItemAvatar>
+                                    <ListItem
+                                        key={m._id}
+                                        className={classes.listItem}
+                                        alignItems="flex-start"
+                                    >
+                                        <ListItemAvatar
+                                            className={classes.avatar}
+                                        >
                                             <Avatar>H</Avatar>
                                         </ListItemAvatar>
                                         <ListItemText

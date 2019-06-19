@@ -42,7 +42,7 @@ const Chat = () => {
             <Grid container>
                 <Grid
                     item
-                    md={4}
+                    md={5}
                     component={Paper}
                     classes={{ root: classes.paper }}
                 >
@@ -76,7 +76,7 @@ const Chat = () => {
                         </ListItem>
                     </List>
                 </Grid>
-                <Grid item md={8}>
+                <Grid item md={7}>
                     <ChatBox scope={scope} />
                 </Grid>
             </Grid>
