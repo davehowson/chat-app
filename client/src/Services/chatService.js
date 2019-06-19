@@ -12,7 +12,7 @@ export function useGetGlobalMessages() {
 
     const getGlobalMessages = () => {
         return fetch(
-            `${process.env.REACT_APP_API_URL}/api/messages`,
+            `${process.env.REACT_APP_API_URL}/api/messages/global`,
             requestOptions
         )
             .then(handleResponse)
@@ -38,7 +38,7 @@ export function useSendGlobalMessage() {
         };
 
         return fetch(
-            `${process.env.REACT_APP_API_URL}/api/messages`,
+            `${process.env.REACT_APP_API_URL}/api/messages/global`,
             requestOptions
         )
             .then(handleResponse)

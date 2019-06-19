@@ -2,10 +2,10 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 // Create Schema for Users
-const MessageSchema = new Schema({
-    conversation: {
+const GlobalMessageSchema = new Schema({
+    from: {
         type: Schema.Types.ObjectId,
-        ref: 'conversations',
+        ref: 'users',
     },
     body: {
         type: String,
@@ -17,4 +17,4 @@ const MessageSchema = new Schema({
     },
 });
 
-module.exports = User = mongoose.model('messages', MessageSchema);
+module.exports = User = mongoose.model('global_messages', GlobalMessageSchema);
