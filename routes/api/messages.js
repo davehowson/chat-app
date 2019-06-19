@@ -31,6 +31,8 @@ router.post('/', (req, res) => {
         body: req.body.body,
     });
 
+    req.io.sockets.emit('messages', req.body.body);
+
     message.save(err => {
         if (err) {
             console.log(err);
