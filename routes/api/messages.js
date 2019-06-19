@@ -61,6 +61,23 @@ router.post('/global', (req, res) => {
     });
 });
 
+// Get conversations
+router.get('/conversations', (req, res) => {
+    Conversation.find()
+        .populate('to')
+        .exec((err, conversations) => {
+            if (err) {
+                console.log(err);
+                res.setHeader('Content-Type', 'application/json');
+                res.end(JSON.stringify({ message: 'Failure' }));
+                res.sendStatus(500);
+            } else {
+                res.send(conversations);
+            }
+        });
+});
+
+// Post private message
 router.post('/', (req, res) => {
     // Verify and decode user from JWT Token
     let jwtUser = null;
@@ -72,7 +89,12 @@ router.post('/', (req, res) => {
 
     Conversation.findOneAndUpdate(
         { from: jwtUser.id, to: req.body.to },
-        { from: jwtUser.id, to: req.body.to },
+        {
+            from: jwtUser.id,
+            to: req.body.to,
+            lastMessage: req.body.body,
+            date: Date.now(),
+        },
         { upsert: true, new: true, setDefaultsOnInsert: true },
         function(err, conversation) {
             if (err) {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
@@ -13,6 +13,7 @@ import LanguageIcon from '@material-ui/icons/Language';
 
 import Header from '../Layout/Header';
 import ChatBox from './ChatBox';
+import { useGetConversations } from '../Services/chatService';
 
 const useStyles = makeStyles(theme => ({
     paper: {
@@ -34,7 +35,13 @@ const useStyles = makeStyles(theme => ({
 
 const Chat = () => {
     const [scope, setScope] = useState('Global Chat');
+    const [conversations, setConversations] = useState([]);
+    const getConversations = useGetConversations();
     const classes = useStyles();
+
+    useEffect(() => {
+        getConversations().then(res => setConversations(res));
+    }, []);
 
     return (
         <React.Fragment>
@@ -59,21 +66,25 @@ const Chat = () => {
                             />
                         </ListSubheader>
                         <Divider />
-                        <ListItem>
-                            <ListItemAvatar>
-                                <Avatar>AD</Avatar>
-                            </ListItemAvatar>
-                            <ListItemText
-                                primary="Andrew Doe"
-                                secondary={
-                                    <React.Fragment>
-                                        {
-                                            " — I'll be in your neighborhood doing errands this…"
-                                        }
-                                    </React.Fragment>
-                                }
-                            />
-                        </ListItem>
+                        {conversations && (
+                            <React.Fragment>
+                                {conversations.map(c => (
+                                    <ListItem>
+                                        <ListItemAvatar>
+                                            <Avatar>AD</Avatar>
+                                        </ListItemAvatar>
+                                        <ListItemText
+                                            primary={c.to.name}
+                                            secondary={
+                                                <React.Fragment>
+                                                    {c.lastMessage}
+                                                </React.Fragment>
+                                            }
+                                        />
+                                    </ListItem>
+                                ))}
+                            </React.Fragment>
+                        )}
                     </List>
                 </Grid>
                 <Grid item md={7}>

@@ -52,3 +52,27 @@ export function useSendGlobalMessage() {
 
     return sendGlobalMessage;
 }
+
+export function useGetConversations() {
+    const { enqueueSnackbar } = useSnackbar();
+    const handleResponse = useHandleResponse();
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader(),
+    };
+
+    const getConversations = () => {
+        return fetch(
+            `${process.env.REACT_APP_API_URL}/api/messages/conversations`,
+            requestOptions
+        )
+            .then(handleResponse)
+            .catch(() =>
+                enqueueSnackbar('Could not load chats', {
+                    variant: 'error',
+                })
+            );
+    };
+
+    return getConversations;
+}
