@@ -14,6 +14,7 @@ import LanguageIcon from '@material-ui/icons/Language';
 import Header from '../Layout/Header';
 import ChatBox from './ChatBox';
 import { useGetConversations } from '../Services/chatService';
+import { authenticationService } from '../Services/authenticationService';
 
 const useStyles = makeStyles(theme => ({
     paper: {
@@ -42,6 +43,18 @@ const Chat = () => {
     useEffect(() => {
         getConversations().then(res => setConversations(res));
     }, []);
+
+    const handleRecipientName = recipients => {
+        for (let i = 0; i < recipients.length; i++) {
+            if (
+                recipients[i].username !==
+                authenticationService.currentUserValue.username
+            ) {
+                return recipients[i].name;
+            }
+        }
+        return null;
+    };
 
     return (
         <React.Fragment>
@@ -74,7 +87,9 @@ const Chat = () => {
                                             <Avatar>AD</Avatar>
                                         </ListItemAvatar>
                                         <ListItemText
-                                            primary={c.recipients[0].name}
+                                            primary={handleRecipientName(
+                                                c.recipients
+                                            )}
                                             secondary={
                                                 <React.Fragment>
                                                     {c.lastMessage}

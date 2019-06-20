@@ -64,7 +64,8 @@ router.post('/global', (req, res) => {
 
 // Get conversations
 router.get('/conversations', (req, res) => {
-    Conversation.find()
+    let from = mongoose.Types.ObjectId(jwtUser.id);
+    Conversation.find({ recipients: { $all: [{ $elemMatch: { $eq: from } }] } })
         .populate('recipients')
         .exec((err, conversations) => {
             if (err) {
@@ -73,7 +74,6 @@ router.get('/conversations', (req, res) => {
                 res.end(JSON.stringify({ message: 'Failure' }));
                 res.sendStatus(500);
             } else {
-                console.log(conversations);
                 res.send(conversations);
             }
         });
@@ -91,6 +91,7 @@ router.post('/', (req, res) => {
 
     let from = mongoose.Types.ObjectId(jwtUser.id);
     let to = mongoose.Types.ObjectId(req.body.to);
+    console.log(from);
 
     Conversation.findOneAndUpdate(
         {

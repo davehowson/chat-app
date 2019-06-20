@@ -126,6 +126,7 @@ router.post('/login', (req, res) => {
                             success: true,
                             token: 'Bearer ' + token,
                             name: user.name,
+                            username: user.username,
                         });
                     }
                 );
