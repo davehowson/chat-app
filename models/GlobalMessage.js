@@ -17,4 +17,7 @@ const GlobalMessageSchema = new Schema({
     },
 });
 
-module.exports = User = mongoose.model('global_messages', GlobalMessageSchema);
+module.exports = GlobalMessage = mongoose.model(
+    'global_messages',
+    GlobalMessageSchema
+);

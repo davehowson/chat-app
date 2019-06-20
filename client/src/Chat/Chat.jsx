@@ -69,12 +69,12 @@ const Chat = () => {
                         {conversations && (
                             <React.Fragment>
                                 {conversations.map(c => (
-                                    <ListItem>
+                                    <ListItem key={c._id}>
                                         <ListItemAvatar>
                                             <Avatar>AD</Avatar>
                                         </ListItemAvatar>
                                         <ListItemText
-                                            primary={c.to.name}
+                                            primary={c.recipients[0].name}
                                             secondary={
                                                 <React.Fragment>
                                                     {c.lastMessage}

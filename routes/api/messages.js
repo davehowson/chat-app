@@ -1,5 +1,6 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
 const router = express.Router();
 
 const keys = require('../../config/keys');
@@ -64,7 +65,7 @@ router.post('/global', (req, res) => {
 // Get conversations
 router.get('/conversations', (req, res) => {
     Conversation.find()
-        .populate('to')
+        .populate('recipients')
         .exec((err, conversations) => {
             if (err) {
                 console.log(err);
@@ -72,6 +73,7 @@ router.get('/conversations', (req, res) => {
                 res.end(JSON.stringify({ message: 'Failure' }));
                 res.sendStatus(500);
             } else {
+                console.log(conversations);
                 res.send(conversations);
             }
         });
@@ -87,11 +89,20 @@ router.post('/', (req, res) => {
         console.log(err);
     }
 
+    let from = mongoose.Types.ObjectId(jwtUser.id);
+    let to = mongoose.Types.ObjectId(req.body.to);
+
     Conversation.findOneAndUpdate(
-        { from: jwtUser.id, to: req.body.to },
         {
-            from: jwtUser.id,
-            to: req.body.to,
+            recipients: {
+                $all: [
+                    { $elemMatch: { $eq: from } },
+                    { $elemMatch: { $eq: to } },
+                ],
+            },
+        },
+        {
+            recipients: [jwtUser.id, req.body.to],
             lastMessage: req.body.body,
             date: Date.now(),
         },
