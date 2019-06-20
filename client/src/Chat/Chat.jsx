@@ -32,10 +32,14 @@ const useStyles = makeStyles(theme => ({
     subheaderText: {
         color: theme.palette.primary.dark,
     },
+    listItem: {
+        cursor: 'pointer',
+    },
 }));
 
 const Chat = () => {
     const [scope, setScope] = useState('Global Chat');
+    const [conversationId, setConversationId] = useState(null);
     const [conversations, setConversations] = useState([]);
     const getConversations = useGetConversations();
     const classes = useStyles();
@@ -67,7 +71,13 @@ const Chat = () => {
                     classes={{ root: classes.paper }}
                 >
                     <List>
-                        <ListSubheader classes={{ root: classes.subheader }}>
+                        <ListSubheader
+                            classes={{ root: classes.subheader }}
+                            onClick={() => {
+                                setScope('Global Chat');
+                                setConversationId(null);
+                            }}
+                        >
                             <ListItemAvatar>
                                 <Avatar className={classes.globe}>
                                     <LanguageIcon />
@@ -82,17 +92,28 @@ const Chat = () => {
                         {conversations && (
                             <React.Fragment>
                                 {conversations.map(c => (
-                                    <ListItem key={c._id}>
+                                    <ListItem
+                                        className={classes.listItem}
+                                        key={c._id}
+                                        onClick={() => {
+                                            setScope(
+                                                handleRecipientName(
+                                                    c.recipientObj
+                                                )
+                                            );
+                                            setConversationId(c._id);
+                                        }}
+                                    >
                                         <ListItemAvatar>
                                             <Avatar>AD</Avatar>
                                         </ListItemAvatar>
                                         <ListItemText
                                             primary={handleRecipientName(
-                                                c.recipients
+                                                c.recipientObj
                                             )}
                                             secondary={
                                                 <React.Fragment>
-                                                    {c.lastMessage}
+                                                    - {c.lastMessage}
                                                 </React.Fragment>
                                             }
                                         />
@@ -103,7 +124,7 @@ const Chat = () => {
                     </List>
                 </Grid>
                 <Grid item md={7}>
-                    <ChatBox scope={scope} />
+                    <ChatBox scope={scope} conversationId={conversationId} />
                 </Grid>
             </Grid>
         </React.Fragment>

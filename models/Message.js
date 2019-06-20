@@ -7,6 +7,14 @@ const MessageSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'conversations',
     },
+    to: {
+        type: Schema.Types.ObjectId,
+        ref: 'users',
+    },
+    from: {
+        type: Schema.Types.ObjectId,
+        ref: 'users',
+    },
     body: {
         type: String,
         required: true,

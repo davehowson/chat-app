@@ -26,8 +26,21 @@ router.use(function(req, res, next) {
 
 // Get global messages
 router.get('/global', (req, res) => {
-    GlobalMessage.find()
-        .populate('from')
+    GlobalMessage.aggregate([
+        {
+            $lookup: {
+                from: 'users',
+                localField: 'from',
+                foreignField: '_id',
+                as: 'from',
+            },
+        },
+    ])
+        .project({
+            'from.password': 0,
+            'from.__v': 0,
+            'from.date': 0,
+        })
         .exec((err, messages) => {
             if (err) {
                 console.log(err);
@@ -62,11 +75,25 @@ router.post('/global', (req, res) => {
     });
 });
 
-// Get conversations
+// Get conversations list
 router.get('/conversations', (req, res) => {
     let from = mongoose.Types.ObjectId(jwtUser.id);
-    Conversation.find({ recipients: { $all: [{ $elemMatch: { $eq: from } }] } })
-        .populate('recipients')
+    Conversation.aggregate([
+        {
+            $lookup: {
+                from: 'users',
+                localField: 'recipients',
+                foreignField: '_id',
+                as: 'recipientObj',
+            },
+        },
+    ])
+        .match({ recipients: { $all: [{ $elemMatch: { $eq: from } }] } })
+        .project({
+            'recipientObj.password': 0,
+            'recipientObj.__v': 0,
+            'recipientObj.date': 0,
+        })
         .exec((err, conversations) => {
             if (err) {
                 console.log(err);
@@ -75,6 +102,48 @@ router.get('/conversations', (req, res) => {
                 res.sendStatus(500);
             } else {
                 res.send(conversations);
+            }
+        });
+});
+
+// Get messages from conversation
+router.get('/conversations/:id', (req, res) => {
+    let conversation = mongoose.Types.ObjectId(req.params.id);
+    Message.aggregate([
+        {
+            $lookup: {
+                from: 'users',
+                localField: 'to',
+                foreignField: '_id',
+                as: 'to',
+            },
+        },
+        {
+            $lookup: {
+                from: 'users',
+                localField: 'from',
+                foreignField: '_id',
+                as: 'from',
+            },
+        },
+    ])
+        .match({ conversation: conversation })
+        .project({
+            'to.password': 0,
+            'to.__v': 0,
+            'to.date': 0,
+            'from.password': 0,
+            'from.__v': 0,
+            'from.date': 0,
+        })
+        .exec((err, messages) => {
+            if (err) {
+                console.log(err);
+                res.setHeader('Content-Type', 'application/json');
+                res.end(JSON.stringify({ message: 'Failure' }));
+                res.sendStatus(500);
+            } else {
+                res.send(messages);
             }
         });
 });
@@ -117,6 +186,8 @@ router.post('/', (req, res) => {
             } else {
                 let message = new Message({
                     conversation: conversation._id,
+                    to: req.body.to,
+                    from: jwtUser.id,
                     body: req.body.body,
                 });
 

@@ -14,6 +14,7 @@ import socketIOClient from 'socket.io-client';
 import {
     useGetGlobalMessages,
     useSendGlobalMessage,
+    useGetConversationMessages,
 } from '../Services/chatService';
 import { Avatar } from '@material-ui/core';
 
@@ -26,7 +27,7 @@ const useStyles = makeStyles(theme => ({
         height: '100%',
     },
     messagesRow: {
-        maxHeight: '75vh',
+        maxHeight: '70vh',
         overflowY: 'auto',
     },
     newMessageRow: {
@@ -50,16 +51,18 @@ const useStyles = makeStyles(theme => ({
 const ChatBox = props => {
     const [newMessage, setNewMessage] = useState('');
     const [messages, setMessages] = useState([]);
+    const [lastMessage, setLastMessage] = useState(null);
+
     const getGlobalMessages = useGetGlobalMessages();
     const sendGlobalMessage = useSendGlobalMessage();
-    const [lastMessage, setLastMessage] = useState(null);
+    const getConversationMessages = useGetConversationMessages(null);
     let chatBottom = useRef(null);
     const classes = useStyles();
 
     useEffect(() => {
         reloadMessages();
         scrollToBottom();
-    }, [lastMessage]);
+    }, [lastMessage, props.scope]);
 
     useEffect(() => {
         const socket = socketIOClient(process.env.REACT_APP_API_URL);
@@ -67,9 +70,15 @@ const ChatBox = props => {
     }, []);
 
     const reloadMessages = () => {
-        getGlobalMessages().then(res => {
-            setMessages(res);
-        });
+        if (props.scope === 'Global Chat') {
+            getGlobalMessages().then(res => {
+                setMessages(res);
+            });
+        } else {
+            getConversationMessages(props.conversationId).then(res =>
+                setMessages(res)
+            );
+        }
     };
 
     const scrollToBottom = () => {
@@ -107,7 +116,7 @@ const ChatBox = props => {
                                             <Avatar>H</Avatar>
                                         </ListItemAvatar>
                                         <ListItemText
-                                            primary={m.from.name}
+                                            primary={m.from[0].name}
                                             secondary={
                                                 <React.Fragment>
                                                     {m.body}
