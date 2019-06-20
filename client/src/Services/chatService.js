@@ -77,6 +77,30 @@ export function useGetConversations() {
     return getConversations;
 }
 
+export function useGetConversationId() {
+    const { enqueueSnackbar } = useSnackbar();
+    const handleResponse = useHandleResponse();
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader(),
+    };
+
+    const getConversationId = id => {
+        return fetch(
+            `${process.env.REACT_APP_API_URL}/api/messages/recipient/${id}`,
+            requestOptions
+        )
+            .then(handleResponse)
+            .catch(() =>
+                enqueueSnackbar('Could not load chat', {
+                    variant: 'error',
+                })
+            );
+    };
+
+    return getConversationId;
+}
+
 export function useGetConversationMessages() {
     const { enqueueSnackbar } = useSnackbar();
     const handleResponse = useHandleResponse();

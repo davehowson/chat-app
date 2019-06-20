@@ -64,7 +64,7 @@ const ChatBox = props => {
     useEffect(() => {
         reloadMessages();
         scrollToBottom();
-    }, [lastMessage, props.scope]);
+    }, [lastMessage, props.scope, props.conversationId]);
 
     useEffect(() => {
         const socket = socketIOClient(process.env.REACT_APP_API_URL);
@@ -76,10 +76,12 @@ const ChatBox = props => {
             getGlobalMessages().then(res => {
                 setMessages(res);
             });
-        } else {
+        } else if (props.scope !== null && props.conversationId !== null) {
             getConversationMessages(props.conversationId).then(res =>
                 setMessages(res)
             );
+        } else {
+            setMessages([]);
         }
     };
 
@@ -96,8 +98,9 @@ const ChatBox = props => {
                 setNewMessage('');
             });
         } else {
-            sendConversationMessage(props.recipientId, newMessage).then(() => {
+            sendConversationMessage(props.recipientId, newMessage).then(res => {
                 setNewMessage('');
+                props.setConversationId(res.conversationId);
             });
         }
     };

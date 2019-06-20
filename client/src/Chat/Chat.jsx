@@ -14,7 +14,10 @@ import LanguageIcon from '@material-ui/icons/Language';
 import Header from '../Layout/Header';
 import ChatBox from './ChatBox';
 import Users from './Users';
-import { useGetConversations } from '../Services/chatService';
+import {
+    useGetConversations,
+    useGetConversationId,
+} from '../Services/chatService';
 import { authenticationService } from '../Services/authenticationService';
 
 const useStyles = makeStyles(theme => ({
@@ -44,11 +47,20 @@ const Chat = () => {
     const [conversations, setConversations] = useState([]);
     const [recipientId, setRecipientId] = useState(null);
     const getConversations = useGetConversations();
+    const getConversationId = useGetConversationId();
     const classes = useStyles();
 
     useEffect(() => {
         getConversations().then(res => setConversations(res));
     }, []);
+
+    useEffect(() => {
+        if (scope !== 'Global Chat') {
+            getConversationId(recipientId).then(res => {
+                setConversationId(res.conversationId);
+            });
+        }
+    }, [recipientId]);
 
     const handleRecipient = recipients => {
         let recipient;
@@ -97,6 +109,11 @@ const Chat = () => {
                             <React.Fragment>
                                 {conversations.map(c => (
                                     <ListItem
+                                        button
+                                        selected={
+                                            scope ===
+                                            handleRecipient(c.recipientObj).name
+                                        }
                                         className={classes.listItem}
                                         key={c._id}
                                         onClick={() => {
@@ -135,6 +152,7 @@ const Chat = () => {
                     <ChatBox
                         scope={scope}
                         conversationId={conversationId}
+                        setConversationId={setConversationId}
                         recipientId={recipientId}
                     />
                 </Grid>
@@ -144,7 +162,11 @@ const Chat = () => {
                     component={Paper}
                     classes={{ root: classes.paper }}
                 >
-                    <Users />
+                    <Users
+                        setScope={setScope}
+                        setRecipientId={setRecipientId}
+                        setConversationId={setConversationId}
+                    />
                 </Grid>
             </Grid>
         </React.Fragment>

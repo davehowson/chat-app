@@ -29,18 +29,19 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-const Users = () => {
+const Users = props => {
     const classes = useStyles();
     const [users, setUsers] = useState([]);
+    const [newUser, setNewUser] = useState(null);
     const getUsers = useGetUsers();
 
     useEffect(() => {
         getUsers().then(res => setUsers(res));
-    }, [users]);
+    }, [newUser]);
 
     useEffect(() => {
         const socket = socketIOClient(process.env.REACT_APP_API_URL);
-        socket.on('users', data => setUsers(users.push(data)));
+        socket.on('users', data => setNewUser(data));
     }, []);
 
     return (
@@ -60,7 +61,14 @@ const Users = () => {
             {users && (
                 <React.Fragment>
                     {users.map(u => (
-                        <ListItem className={classes.listItem} key={u._id}>
+                        <ListItem
+                            className={classes.listItem}
+                            key={u._id}
+                            onClick={() => {
+                                props.setScope(u.name);
+                                props.setRecipientId(u._id);
+                            }}
+                        >
                             <ListItemAvatar>
                                 <Avatar>AD</Avatar>
                             </ListItemAvatar>
