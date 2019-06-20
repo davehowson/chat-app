@@ -100,3 +100,30 @@ export function useGetConversationMessages() {
 
     return getConversationMessages;
 }
+
+export function useSendConversationMessage() {
+    const { enqueueSnackbar } = useSnackbar();
+    const handleResponse = useHandleResponse();
+
+    const sendConversationMessage = (id, body) => {
+        const requestOptions = {
+            method: 'POST',
+            headers: authHeader(),
+            body: JSON.stringify({ to: id, body: body }),
+        };
+
+        return fetch(
+            `${process.env.REACT_APP_API_URL}/api/messages/`,
+            requestOptions
+        )
+            .then(handleResponse)
+            .catch(err => {
+                console.log(err);
+                enqueueSnackbar('Could send message', {
+                    variant: 'error',
+                });
+            });
+    };
+
+    return sendConversationMessage;
+}

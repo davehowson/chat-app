@@ -15,6 +15,7 @@ import {
     useGetGlobalMessages,
     useSendGlobalMessage,
     useGetConversationMessages,
+    useSendConversationMessage,
 } from '../Services/chatService';
 import { Avatar } from '@material-ui/core';
 
@@ -56,6 +57,7 @@ const ChatBox = props => {
     const getGlobalMessages = useGetGlobalMessages();
     const sendGlobalMessage = useSendGlobalMessage();
     const getConversationMessages = useGetConversationMessages(null);
+    const sendConversationMessage = useSendConversationMessage();
     let chatBottom = useRef(null);
     const classes = useStyles();
 
@@ -89,9 +91,15 @@ const ChatBox = props => {
 
     const handleSubmit = e => {
         e.preventDefault();
-        sendGlobalMessage(newMessage).then(() => {
-            setNewMessage('');
-        });
+        if (props.scope === 'Global Chat') {
+            sendGlobalMessage(newMessage).then(() => {
+                setNewMessage('');
+            });
+        } else {
+            sendConversationMessage(props.recipientId, newMessage).then(() => {
+                setNewMessage('');
+            });
+        }
     };
 
     return (

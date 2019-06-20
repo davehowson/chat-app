@@ -41,6 +41,7 @@ const Chat = () => {
     const [scope, setScope] = useState('Global Chat');
     const [conversationId, setConversationId] = useState(null);
     const [conversations, setConversations] = useState([]);
+    const [recipientId, setRecipientId] = useState(null);
     const getConversations = useGetConversations();
     const classes = useStyles();
 
@@ -48,16 +49,18 @@ const Chat = () => {
         getConversations().then(res => setConversations(res));
     }, []);
 
-    const handleRecipientName = recipients => {
+    const handleRecipient = recipients => {
+        let recipient;
         for (let i = 0; i < recipients.length; i++) {
             if (
                 recipients[i].username !==
                 authenticationService.currentUserValue.username
             ) {
-                return recipients[i].name;
+                recipient = recipients[i];
             }
         }
-        return null;
+
+        return recipient;
     };
 
     return (
@@ -97,9 +100,12 @@ const Chat = () => {
                                         key={c._id}
                                         onClick={() => {
                                             setScope(
-                                                handleRecipientName(
-                                                    c.recipientObj
-                                                )
+                                                handleRecipient(c.recipientObj)
+                                                    .name
+                                            );
+                                            setRecipientId(
+                                                handleRecipient(c.recipientObj)
+                                                    ._id
                                             );
                                             setConversationId(c._id);
                                         }}
@@ -108,9 +114,10 @@ const Chat = () => {
                                             <Avatar>AD</Avatar>
                                         </ListItemAvatar>
                                         <ListItemText
-                                            primary={handleRecipientName(
-                                                c.recipientObj
-                                            )}
+                                            primary={
+                                                handleRecipient(c.recipientObj)
+                                                    .name
+                                            }
                                             secondary={
                                                 <React.Fragment>
                                                     - {c.lastMessage}
@@ -124,7 +131,11 @@ const Chat = () => {
                     </List>
                 </Grid>
                 <Grid item md={7}>
-                    <ChatBox scope={scope} conversationId={conversationId} />
+                    <ChatBox
+                        scope={scope}
+                        conversationId={conversationId}
+                        recipientId={recipientId}
+                    />
                 </Grid>
             </Grid>
         </React.Fragment>
