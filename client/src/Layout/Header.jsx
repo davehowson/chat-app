@@ -4,6 +4,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
+import Link from '@material-ui/core/Link';
 
 import { authenticationService } from '../Services/authenticationService';
 import history from '../Utilities/history';
@@ -14,6 +15,12 @@ const useStyles = makeStyles(theme => ({
     },
     title: {
         flexGrow: 1,
+    },
+    link: {
+        color: 'white',
+        '&:hover': {
+            textDecoration: 'none',
+        },
     },
 }));
 
@@ -30,7 +37,9 @@ const Header = () => {
             <AppBar position="static">
                 <Toolbar>
                     <Typography variant="h6" className={classes.title}>
-                        CHAT APP
+                        <Link href="/" className={classes.link}>
+                            CHAT APP
+                        </Link>
                     </Typography>
                     <Button color="inherit" onClick={handleLogout}>
                         Logout

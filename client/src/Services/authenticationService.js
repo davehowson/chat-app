@@ -68,10 +68,16 @@ export function useRegister() {
 
                 return user;
             })
-            .catch(function() {
-                enqueueSnackbar('Failed to Register', {
-                    variant: 'error',
-                });
+            .catch(function(response) {
+                if (response) {
+                    enqueueSnackbar(response, {
+                        variant: 'error',
+                    });
+                } else {
+                    enqueueSnackbar('Failed to Register', {
+                        variant: 'error',
+                    });
+                }
             });
     };
 

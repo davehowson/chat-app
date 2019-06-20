@@ -42,6 +42,7 @@ app.use(passport.initialize());
 // Passport config
 require('./config/passport')(passport);
 
+// Assign socket object to every request
 app.use(function(req, res, next) {
     req.io = io;
     next();

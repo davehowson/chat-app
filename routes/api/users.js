@@ -9,9 +9,25 @@ const validateLoginInput = require('../../validation/login');
 // Load User model
 const User = require('../../models/User');
 
-// @route POST api/users/register
-// @desc Register user
-// @access Public
+router.get('/', (req, res) => {
+    User.aggregate()
+        .project({
+            password: 0,
+            __v: 0,
+            date: 0,
+        })
+        .exec((err, users) => {
+            if (err) {
+                console.log(err);
+                res.setHeader('Content-Type', 'application/json');
+                res.end(JSON.stringify({ message: 'Failure' }));
+                res.sendStatus(500);
+            } else {
+                res.send(users);
+            }
+        });
+});
+
 router.post('/register', (req, res) => {
     // Form validation
     const { errors, isValid } = validateRegisterInput(req.body);
@@ -21,9 +37,7 @@ router.post('/register', (req, res) => {
     }
     User.findOne({ username: req.body.username }).then(user => {
         if (user) {
-            return res
-                .status(400)
-                .json({ username: 'Username already exists' });
+            return res.status(400).json({ message: 'Username already exists' });
         } else {
             const newUser = new User({
                 name: req.body.name,
@@ -74,6 +88,7 @@ router.post('/register', (req, res) => {
                     expiresIn: 31556926, // 1 year in seconds
                 },
                 (err, token) => {
+                    req.io.sockets.emit('users', req.body.body);
                     res.json({
                         success: true,
                         token: 'Bearer ' + token,
@@ -85,9 +100,6 @@ router.post('/register', (req, res) => {
     });
 });
 
-// @route POST api/users/login
-// @desc Login user and return JWT token
-// @access Public
 router.post('/login', (req, res) => {
     // Form validation
     const { errors, isValid } = validateLoginInput(req.body);

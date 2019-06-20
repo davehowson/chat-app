@@ -13,6 +13,7 @@ import LanguageIcon from '@material-ui/icons/Language';
 
 import Header from '../Layout/Header';
 import ChatBox from './ChatBox';
+import Users from './Users';
 import { useGetConversations } from '../Services/chatService';
 import { authenticationService } from '../Services/authenticationService';
 
@@ -69,7 +70,7 @@ const Chat = () => {
             <Grid container>
                 <Grid
                     item
-                    md={5}
+                    md={3}
                     component={Paper}
                     classes={{ root: classes.paper }}
                 >
@@ -136,6 +137,14 @@ const Chat = () => {
                         conversationId={conversationId}
                         recipientId={recipientId}
                     />
+                </Grid>
+                <Grid
+                    item
+                    md={2}
+                    component={Paper}
+                    classes={{ root: classes.paper }}
+                >
+                    <Users />
                 </Grid>
             </Grid>
         </React.Fragment>
