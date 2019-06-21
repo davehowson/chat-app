@@ -3,22 +3,13 @@ import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import Divider from '@material-ui/core/Divider';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import ListSubheader from '@material-ui/core/ListSubheader';
-import Avatar from '@material-ui/core/Avatar';
-import LanguageIcon from '@material-ui/icons/Language';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 
 import Header from '../Layout/Header';
 import ChatBox from './ChatBox';
+import ChatList from './Conversations';
 import Users from './Users';
-import {
-    useGetConversations,
-    useGetConversationId,
-} from '../Services/chatService';
-import { authenticationService } from '../Services/authenticationService';
 
 const useStyles = makeStyles(theme => ({
     paper: {
@@ -27,6 +18,9 @@ const useStyles = makeStyles(theme => ({
     },
     sidebar: {
         zIndex: 8,
+    },
+    list: {
+        paddingTop: 0,
     },
     subheader: {
         display: 'flex',
@@ -46,7 +40,12 @@ const useStyles = makeStyles(theme => ({
 
 const Chat = () => {
     const [scope, setScope] = useState('Global Chat');
+    const [tab, setTab] = useState(1);
     const classes = useStyles();
+
+    const handleChange = (e, newVal) => {
+        setTab(newVal);
+    };
 
     return (
         <React.Fragment>
@@ -54,24 +53,21 @@ const Chat = () => {
             <Grid container>
                 <Grid item md={4} className={classes.sidebar}>
                     <Paper className={classes.paper} square elevation={5}>
-                        <List>
-                            <ListSubheader
-                                classes={{ root: classes.subheader }}
-                                onClick={() => {
-                                    setScope('Global Chat');
-                                }}
-                            >
-                                <ListItemAvatar>
-                                    <Avatar className={classes.globe}>
-                                        <LanguageIcon />
-                                    </Avatar>
-                                </ListItemAvatar>
-                                <ListItemText
-                                    className={classes.subheaderText}
-                                    primary="Global Chat"
-                                />
-                            </ListSubheader>
-                            <Divider />
+                        <List className={classes.list}>
+                            <Paper square>
+                                <Tabs
+                                    onChange={handleChange}
+                                    variant="fullWidth"
+                                    value={tab}
+                                    indicatorColor="primary"
+                                    textColor="primary"
+                                >
+                                    <Tab label="Chats" />
+                                    <Tab label="Users" />
+                                </Tabs>
+                            </Paper>
+                            {tab === 0 && <ChatList setScope={setScope} />}
+                            {tab === 1 && <Users />}
                         </List>
                     </Paper>
                 </Grid>

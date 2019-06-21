@@ -46,18 +46,6 @@ const Users = props => {
 
     return (
         <List>
-            <ListSubheader classes={{ root: classes.subheader }}>
-                <ListItemAvatar>
-                    <Avatar className={classes.globe}>
-                        <GroupIcon />
-                    </Avatar>
-                </ListItemAvatar>
-                <ListItemText
-                    className={classes.subheaderText}
-                    primary="Users"
-                />
-            </ListSubheader>
-            <Divider />
             {users && (
                 <React.Fragment>
                     {users.map(u => (
