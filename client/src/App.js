@@ -13,15 +13,15 @@ import Chat from './Chat/Chat';
 const theme = createMuiTheme({
     palette: {
         primary: {
-            light: '#768fff',
-            main: '#2962ff',
-            dark: '#0039cb',
+            light: '#58a5f0',
+            main: '#0277bd',
+            dark: '#004c8c',
         },
         secondary: {
-            light: '#fff961',
-            main: '#ffc629',
-            dark: '#c79600',
-            contrastText: '#FFF',
+            light: '#ffd95a',
+            main: '#f9a825',
+            dark: '#c17900',
+            contrastText: '#212121',
         },
         background: {
             default: '#f0f0f0',
