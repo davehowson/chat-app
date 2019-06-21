@@ -13,10 +13,10 @@ Real time message broadcasting is developed using [Socket.IO](https://socket.io/
 Has the following features
 * Uses JSON Web Tokens to facilitate authentication between Client & Server
 * Provides a **Global Chat** which can be used by anyone using the application to broadcast messages to everyone else.
-
-Currently developing the following features
-* Private chat functionality
-* User profile customization functionality
+* Provides **Private Chat** functionality where users can chat with other users privately.
+* Updates conversation lists, user lists and messages in real time.
 
 
 This application was developed purely for the intent of learning the MERN stack.
+
+![Chat App Screenshot](https://i.imgur.com/JBB48Kz.png)
