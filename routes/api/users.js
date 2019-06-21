@@ -2,30 +2,43 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
+
 const keys = require('../../config/keys');
-// Load input validation
+const verify = require('../../utilities/verify-token');
 const validateRegisterInput = require('../../validation/register');
 const validateLoginInput = require('../../validation/login');
-// Load User model
 const User = require('../../models/User');
 
 router.get('/', (req, res) => {
-    User.aggregate()
-        .project({
-            password: 0,
-            __v: 0,
-            date: 0,
-        })
-        .exec((err, users) => {
-            if (err) {
-                console.log(err);
-                res.setHeader('Content-Type', 'application/json');
-                res.end(JSON.stringify({ message: 'Failure' }));
-                res.sendStatus(500);
-            } else {
-                res.send(users);
-            }
-        });
+    try {
+        let jwtUser = jwt.verify(verify(req), keys.secretOrKey);
+        let id = mongoose.Types.ObjectId(jwtUser.id);
+        console.log(jwtUser.id);
+
+        User.aggregate()
+            .match({ _id: { $not: { $eq: id } } })
+            .project({
+                password: 0,
+                __v: 0,
+                date: 0,
+            })
+            .exec((err, users) => {
+                if (err) {
+                    console.log(err);
+                    res.setHeader('Content-Type', 'application/json');
+                    res.end(JSON.stringify({ message: 'Failure' }));
+                    res.sendStatus(500);
+                } else {
+                    res.send(users);
+                }
+            });
+    } catch (err) {
+        console.log(err);
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify({ message: 'Unauthorized' }));
+        res.sendStatus(401);
+    }
 });
 
 router.post('/register', (req, res) => {

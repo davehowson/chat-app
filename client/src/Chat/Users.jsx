@@ -25,8 +25,8 @@ const useStyles = makeStyles(theme => ({
         maxHeight: '80vh',
         overflowY: 'auto',
     },
-    listItem: {
-        cursor: 'pointer',
+    avatar: {
+        margin: theme.spacing(0, 3, 0, 1),
     },
 }));
 
@@ -43,7 +43,6 @@ const Users = props => {
     useEffect(() => {
         const socket = socketIOClient(process.env.REACT_APP_API_URL);
         socket.on('users', data => {
-            console.log(data);
             setNewUser(data);
         });
     }, []);
@@ -53,8 +52,16 @@ const Users = props => {
             {users && (
                 <React.Fragment>
                     {users.map(u => (
-                        <ListItem className={classes.listItem} key={u._id}>
-                            <ListItemAvatar>
+                        <ListItem
+                            className={classes.listItem}
+                            key={u._id}
+                            onClick={() => {
+                                props.setUser(u);
+                                props.setScope(u.name);
+                            }}
+                            button
+                        >
+                            <ListItemAvatar className={classes.avatar}>
                                 <Avatar>AD</Avatar>
                             </ListItemAvatar>
                             <ListItemText primary={u.name} />

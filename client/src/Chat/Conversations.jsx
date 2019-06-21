@@ -4,7 +4,6 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
-import ListSubheader from '@material-ui/core/ListSubheader';
 import LanguageIcon from '@material-ui/icons/Language';
 import Divider from '@material-ui/core/Divider';
 import { makeStyles } from '@material-ui/core/styles';
@@ -25,8 +24,9 @@ const useStyles = makeStyles(theme => ({
     subheaderText: {
         color: theme.palette.primary.dark,
     },
-    listItem: {
-        cursor: 'pointer',
+    list: {
+        maxHeight: '80vh',
+        overflowY: 'auto',
     },
 }));
 
@@ -38,13 +38,13 @@ const Conversations = props => {
 
     // Returns the recipient name that does not
     // belong to the current user.
-    const handleRecipientName = recipients => {
+    const handleRecipient = recipients => {
         for (let i = 0; i < recipients.length; i++) {
             if (
                 recipients[i].username !==
                 authenticationService.currentUserValue.username
             ) {
-                return recipients[i].name;
+                return recipients[i];
             }
         }
         return null;
@@ -55,13 +55,17 @@ const Conversations = props => {
     }, [newConversation]);
 
     useEffect(() => {
-        const socket = socketIOClient(process.env.REACT_APP_API_URL);
-        socket.on('conversations', data => setNewConversation(data));
+        let socket = socketIOClient(process.env.REACT_APP_API_URL);
+        socket.on('messages', data => setNewConversation(data));
+
+        return () => {
+            socket.removeListener('messages');
+        };
     }, []);
 
     return (
-        <List>
-            <ListSubheader
+        <List className={classes.list}>
+            <ListItem
                 classes={{ root: classes.subheader }}
                 onClick={() => {
                     props.setScope('Global Chat');
@@ -76,17 +80,28 @@ const Conversations = props => {
                     className={classes.subheaderText}
                     primary="Global Chat"
                 />
-            </ListSubheader>
+            </ListItem>
             <Divider />
+
             {conversations && (
                 <React.Fragment>
                     {conversations.map(c => (
-                        <ListItem className={classes.listItem} key={c._id}>
+                        <ListItem
+                            className={classes.listItem}
+                            key={c._id}
+                            button
+                            onClick={() => {
+                                props.setUser(handleRecipient(c.recipientObj));
+                                props.setScope(
+                                    handleRecipient(c.recipientObj).name
+                                );
+                            }}
+                        >
                             <ListItemAvatar>
                                 <Avatar>AD</Avatar>
                             </ListItemAvatar>
                             <ListItemText
-                                primary={handleRecipientName(c.recipientObj)}
+                                primary={handleRecipient(c.recipientObj).name}
                                 secondary={
                                     <React.Fragment>
                                         {c.lastMessage}

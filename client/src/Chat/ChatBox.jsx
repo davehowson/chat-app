@@ -68,8 +68,9 @@ const ChatBox = props => {
 
     const getGlobalMessages = useGetGlobalMessages();
     const sendGlobalMessage = useSendGlobalMessage();
-    const getConversationMessages = useGetConversationMessages(null);
+    const getConversationMessages = useGetConversationMessages();
     const sendConversationMessage = useSendConversationMessage();
+
     let chatBottom = useRef(null);
     const classes = useStyles();
 
@@ -89,7 +90,7 @@ const ChatBox = props => {
                 setMessages(res);
             });
         } else if (props.scope !== null && props.conversationId !== null) {
-            getConversationMessages(props.conversationId).then(res =>
+            getConversationMessages(props.user._id).then(res =>
                 setMessages(res)
             );
         } else {
@@ -110,9 +111,8 @@ const ChatBox = props => {
                 setNewMessage('');
             });
         } else {
-            sendConversationMessage(props.recipientId, newMessage).then(res => {
+            sendConversationMessage(props.user._id, newMessage).then(res => {
                 setNewMessage('');
-                props.setConversationId(res.conversationId);
             });
         }
     };
@@ -143,7 +143,7 @@ const ChatBox = props => {
                                             <Avatar>H</Avatar>
                                         </ListItemAvatar>
                                         <ListItemText
-                                            primary={m.from[0].name}
+                                            primary={m.fromObj[0].name}
                                             secondary={
                                                 <React.Fragment>
                                                     {m.body}

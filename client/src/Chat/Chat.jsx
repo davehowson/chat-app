@@ -8,7 +8,7 @@ import Tab from '@material-ui/core/Tab';
 
 import Header from '../Layout/Header';
 import ChatBox from './ChatBox';
-import ChatList from './Conversations';
+import Conversations from './Conversations';
 import Users from './Users';
 
 const useStyles = makeStyles(theme => ({
@@ -30,14 +30,12 @@ const useStyles = makeStyles(theme => ({
     subheaderText: {
         color: theme.palette.primary.dark,
     },
-    listItem: {
-        cursor: 'pointer',
-    },
 }));
 
 const Chat = () => {
     const [scope, setScope] = useState('Global Chat');
-    const [tab, setTab] = useState(1);
+    const [tab, setTab] = useState(0);
+    const [user, setUser] = useState(null);
     const classes = useStyles();
 
     const handleChange = (e, newVal) => {
@@ -62,12 +60,19 @@ const Chat = () => {
                                 <Tab label="Users" />
                             </Tabs>
                         </Paper>
-                        {tab === 0 && <ChatList setScope={setScope} />}
-                        {tab === 1 && <Users />}
+                        {tab === 0 && (
+                            <Conversations
+                                setUser={setUser}
+                                setScope={setScope}
+                            />
+                        )}
+                        {tab === 1 && (
+                            <Users setUser={setUser} setScope={setScope} />
+                        )}
                     </Paper>
                 </Grid>
                 <Grid item md={8}>
-                    <ChatBox scope={scope} />
+                    <ChatBox scope={scope} user={user} />
                 </Grid>
             </Grid>
         </React.Fragment>
