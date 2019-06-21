@@ -64,38 +64,25 @@ router.post('/register', (req, res) => {
                                     expiresIn: 31556926, // 1 year in seconds
                                 },
                                 (err, token) => {
-                                    res.json({
-                                        success: true,
-                                        token: 'Bearer ' + token,
-                                        name: user.name,
-                                    });
+                                    if (err) {
+                                        console.log(err);
+                                    } else {
+                                        req.io.sockets.emit(
+                                            'users',
+                                            user.username
+                                        );
+                                        res.json({
+                                            success: true,
+                                            token: 'Bearer ' + token,
+                                            name: user.name,
+                                        });
+                                    }
                                 }
                             );
                         })
                         .catch(err => console.log(err));
                 });
             });
-
-            const payload = {
-                id: user.id,
-                name: user.name,
-            };
-            // Sign token
-            jwt.sign(
-                payload,
-                keys.secretOrKey,
-                {
-                    expiresIn: 31556926, // 1 year in seconds
-                },
-                (err, token) => {
-                    req.io.sockets.emit('users', req.body.body);
-                    res.json({
-                        success: true,
-                        token: 'Bearer ' + token,
-                        name: user.name,
-                    });
-                }
-            );
         }
     });
 });

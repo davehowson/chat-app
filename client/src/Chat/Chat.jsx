@@ -19,9 +19,6 @@ const useStyles = makeStyles(theme => ({
     sidebar: {
         zIndex: 8,
     },
-    list: {
-        paddingTop: 0,
-    },
     subheader: {
         display: 'flex',
         alignItems: 'center',
@@ -53,22 +50,20 @@ const Chat = () => {
             <Grid container>
                 <Grid item md={4} className={classes.sidebar}>
                     <Paper className={classes.paper} square elevation={5}>
-                        <List className={classes.list}>
-                            <Paper square>
-                                <Tabs
-                                    onChange={handleChange}
-                                    variant="fullWidth"
-                                    value={tab}
-                                    indicatorColor="primary"
-                                    textColor="primary"
-                                >
-                                    <Tab label="Chats" />
-                                    <Tab label="Users" />
-                                </Tabs>
-                            </Paper>
-                            {tab === 0 && <ChatList setScope={setScope} />}
-                            {tab === 1 && <Users />}
-                        </List>
+                        <Paper square>
+                            <Tabs
+                                onChange={handleChange}
+                                variant="fullWidth"
+                                value={tab}
+                                indicatorColor="primary"
+                                textColor="primary"
+                            >
+                                <Tab label="Chats" />
+                                <Tab label="Users" />
+                            </Tabs>
+                        </Paper>
+                        {tab === 0 && <ChatList setScope={setScope} />}
+                        {tab === 1 && <Users />}
                     </Paper>
                 </Grid>
                 <Grid item md={8}>

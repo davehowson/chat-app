@@ -28,6 +28,9 @@
         "validator": "^11.0.0"
     },
     "devDependencies": {
+        "eslint": "^5.16.0",
+        "eslint-plugin-react": "^7.13.0",
+        "eslint-plugin-react-hooks": "^1.6.0",
         "nodemon": "^1.19.1"
     }
 }

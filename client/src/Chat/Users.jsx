@@ -3,10 +3,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import ListSubheader from '@material-ui/core/ListSubheader';
-import Divider from '@material-ui/core/Divider';
 import Avatar from '@material-ui/core/Avatar';
-import GroupIcon from '@material-ui/icons/Group';
 import { makeStyles } from '@material-ui/core/styles';
 import socketIOClient from 'socket.io-client';
 
@@ -23,6 +20,10 @@ const useStyles = makeStyles(theme => ({
     },
     subheaderText: {
         color: theme.palette.primary.dark,
+    },
+    list: {
+        maxHeight: '80vh',
+        overflowY: 'auto',
     },
     listItem: {
         cursor: 'pointer',
@@ -41,11 +42,14 @@ const Users = props => {
 
     useEffect(() => {
         const socket = socketIOClient(process.env.REACT_APP_API_URL);
-        socket.on('users', data => setNewUser(data));
+        socket.on('users', data => {
+            console.log(data);
+            setNewUser(data);
+        });
     }, []);
 
     return (
-        <List>
+        <List className={classes.list}>
             {users && (
                 <React.Fragment>
                     {users.map(u => (
