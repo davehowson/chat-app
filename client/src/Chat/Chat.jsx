@@ -25,6 +25,9 @@ const useStyles = makeStyles(theme => ({
         minHeight: 'calc(100vh - 64px)',
         borderRadius: 0,
     },
+    sidebar: {
+        zIndex: 8,
+    },
     subheader: {
         display: 'flex',
         alignItems: 'center',
@@ -49,31 +52,28 @@ const Chat = () => {
         <React.Fragment>
             <Header />
             <Grid container>
-                <Grid
-                    item
-                    md={4}
-                    component={Paper}
-                    classes={{ root: classes.paper }}
-                >
-                    <List>
-                        <ListSubheader
-                            classes={{ root: classes.subheader }}
-                            onClick={() => {
-                                setScope('Global Chat');
-                            }}
-                        >
-                            <ListItemAvatar>
-                                <Avatar className={classes.globe}>
-                                    <LanguageIcon />
-                                </Avatar>
-                            </ListItemAvatar>
-                            <ListItemText
-                                className={classes.subheaderText}
-                                primary="Global Chat"
-                            />
-                        </ListSubheader>
-                        <Divider />
-                    </List>
+                <Grid item md={4} className={classes.sidebar}>
+                    <Paper className={classes.paper} square elevation={5}>
+                        <List>
+                            <ListSubheader
+                                classes={{ root: classes.subheader }}
+                                onClick={() => {
+                                    setScope('Global Chat');
+                                }}
+                            >
+                                <ListItemAvatar>
+                                    <Avatar className={classes.globe}>
+                                        <LanguageIcon />
+                                    </Avatar>
+                                </ListItemAvatar>
+                                <ListItemText
+                                    className={classes.subheaderText}
+                                    primary="Global Chat"
+                                />
+                            </ListSubheader>
+                            <Divider />
+                        </List>
+                    </Paper>
                 </Grid>
                 <Grid item md={8}>
                     <ChatBox scope={scope} />

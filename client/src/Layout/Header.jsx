@@ -31,9 +31,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Header = () => {
-    const [currentUser, setCurrentUser] = useState(
-        authenticationService.currentUserValue
-    );
+    const [currentUser] = useState(authenticationService.currentUserValue);
     const [anchorEl, setAnchorEl] = useState(null);
     const [dropdownOpen, setDropdownOpen] = useState(false);
 
