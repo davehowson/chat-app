@@ -61,14 +61,7 @@ const Users = props => {
             {users && (
                 <React.Fragment>
                     {users.map(u => (
-                        <ListItem
-                            className={classes.listItem}
-                            key={u._id}
-                            onClick={() => {
-                                props.setScope(u.name);
-                                props.setRecipientId(u._id);
-                            }}
-                        >
+                        <ListItem className={classes.listItem} key={u._id}>
                             <ListItemAvatar>
                                 <Avatar>AD</Avatar>
                             </ListItemAvatar>

@@ -148,44 +148,6 @@ router.get('/conversations/:id', (req, res) => {
         });
 });
 
-// Find conversation id if exists
-
-router.get('/recipient/:id', (req, res) => {
-    let from = mongoose.Types.ObjectId(jwtUser.id);
-    let to = mongoose.Types.ObjectId(req.params.id);
-
-    Conversation.findOneAndUpdate(
-        {
-            recipients: {
-                $all: [
-                    { $elemMatch: { $eq: from } },
-                    { $elemMatch: { $eq: to } },
-                ],
-            },
-        },
-        {
-            recipients: [jwtUser.id, req.params.id],
-        },
-        { upsert: true, new: true, setDefaultsOnInsert: true },
-        function(err, conversation) {
-            if (err) {
-                console.log(err);
-                res.setHeader('Content-Type', 'application/json');
-                res.end(JSON.stringify({ message: 'Failure' }));
-                res.sendStatus(500);
-            } else {
-                res.setHeader('Content-Type', 'application/json');
-                res.end(
-                    JSON.stringify({
-                        message: 'Success',
-                        conversationId: conversation._id,
-                    })
-                );
-            }
-        }
-    );
-});
-
 // Post private message
 router.post('/', (req, res) => {
     let from = mongoose.Types.ObjectId(jwtUser.id);

@@ -43,38 +43,7 @@ const useStyles = makeStyles(theme => ({
 
 const Chat = () => {
     const [scope, setScope] = useState('Global Chat');
-    const [conversationId, setConversationId] = useState(null);
-    const [conversations, setConversations] = useState([]);
-    const [recipientId, setRecipientId] = useState(null);
-    const getConversations = useGetConversations();
-    const getConversationId = useGetConversationId();
     const classes = useStyles();
-
-    useEffect(() => {
-        getConversations().then(res => setConversations(res));
-    }, []);
-
-    useEffect(() => {
-        if (scope !== 'Global Chat') {
-            getConversationId(recipientId).then(res => {
-                setConversationId(res.conversationId);
-            });
-        }
-    }, [recipientId]);
-
-    const handleRecipient = recipients => {
-        let recipient;
-        for (let i = 0; i < recipients.length; i++) {
-            if (
-                recipients[i].username !==
-                authenticationService.currentUserValue.username
-            ) {
-                recipient = recipients[i];
-            }
-        }
-
-        return recipient;
-    };
 
     return (
         <React.Fragment>
@@ -82,7 +51,7 @@ const Chat = () => {
             <Grid container>
                 <Grid
                     item
-                    md={3}
+                    md={4}
                     component={Paper}
                     classes={{ root: classes.paper }}
                 >
@@ -91,7 +60,6 @@ const Chat = () => {
                             classes={{ root: classes.subheader }}
                             onClick={() => {
                                 setScope('Global Chat');
-                                setConversationId(null);
                             }}
                         >
                             <ListItemAvatar>
@@ -105,68 +73,10 @@ const Chat = () => {
                             />
                         </ListSubheader>
                         <Divider />
-                        {conversations && (
-                            <React.Fragment>
-                                {conversations.map(c => (
-                                    <ListItem
-                                        button
-                                        selected={
-                                            scope ===
-                                            handleRecipient(c.recipientObj).name
-                                        }
-                                        className={classes.listItem}
-                                        key={c._id}
-                                        onClick={() => {
-                                            setScope(
-                                                handleRecipient(c.recipientObj)
-                                                    .name
-                                            );
-                                            setRecipientId(
-                                                handleRecipient(c.recipientObj)
-                                                    ._id
-                                            );
-                                            setConversationId(c._id);
-                                        }}
-                                    >
-                                        <ListItemAvatar>
-                                            <Avatar>AD</Avatar>
-                                        </ListItemAvatar>
-                                        <ListItemText
-                                            primary={
-                                                handleRecipient(c.recipientObj)
-                                                    .name
-                                            }
-                                            secondary={
-                                                <React.Fragment>
-                                                    - {c.lastMessage}
-                                                </React.Fragment>
-                                            }
-                                        />
-                                    </ListItem>
-                                ))}
-                            </React.Fragment>
-                        )}
                     </List>
                 </Grid>
-                <Grid item md={7}>
-                    <ChatBox
-                        scope={scope}
-                        conversationId={conversationId}
-                        setConversationId={setConversationId}
-                        recipientId={recipientId}
-                    />
-                </Grid>
-                <Grid
-                    item
-                    md={2}
-                    component={Paper}
-                    classes={{ root: classes.paper }}
-                >
-                    <Users
-                        setScope={setScope}
-                        setRecipientId={setRecipientId}
-                        setConversationId={setConversationId}
-                    />
+                <Grid item md={8}>
+                    <ChatBox scope={scope} />
                 </Grid>
             </Grid>
         </React.Fragment>
