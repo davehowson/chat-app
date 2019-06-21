@@ -8,6 +8,7 @@ import Link from '@material-ui/core/Link';
 
 import { authenticationService } from '../Services/authenticationService';
 import history from '../Utilities/history';
+import logo from './logo.png';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -15,12 +16,6 @@ const useStyles = makeStyles(theme => ({
     },
     title: {
         flexGrow: 1,
-    },
-    link: {
-        color: 'white',
-        '&:hover': {
-            textDecoration: 'none',
-        },
     },
 }));
 
@@ -36,11 +31,9 @@ const Header = () => {
         <div className={classes.root}>
             <AppBar position="static">
                 <Toolbar>
-                    <Typography variant="h6" className={classes.title}>
-                        <Link href="/" className={classes.link}>
-                            CHAT APP
-                        </Link>
-                    </Typography>
+                    <Link href="/" className={classes.title}>
+                        <img src={logo} alt="Logo" />
+                    </Link>
                     <Button color="inherit" onClick={handleLogout}>
                         Logout
                     </Button>
