@@ -59,9 +59,7 @@ router.post('/global', (req, res) => {
         from: jwtUser.id,
         body: req.body.body,
     });
-
-    req.io.sockets.emit('messages', req.body.body);
-
+    req.io.emit('messages', req.body.body);
     message.save(err => {
         if (err) {
             console.log(err);

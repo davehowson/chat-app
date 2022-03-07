@@ -3,7 +3,6 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const passport = require("passport");
 const cors = require("cors");
-
 const users = require("./routes/api/users");
 const messages = require("./routes/api/messages");
 
@@ -12,12 +11,19 @@ const app = express();
 // Port that the webserver listens to
 const port = process.env.PORT || 5000;
 
-const server = app.listen(port, () =>
-  console.log(`Server running on port ${port}`)
+// Express and socket.io on same server
+const http = require('http');
+const server = http.createServer(app);
+const {Server} = require("socket.io");
+const io = new Server(server,{
+  cors:{
+    origin:'*',
+  }
+})
+//Don't use app.listen()  because it will listen only for express server and socket.io will not work(it won't throw error either so be cautious)
+server.listen(port, () =>
+console.log(`Server running on port ${port}`)
 );
-
-const io = require("socket.io").listen(server);
-
 // Body Parser middleware to parse request bodies
 app.use(
   bodyParser.urlencoded({
